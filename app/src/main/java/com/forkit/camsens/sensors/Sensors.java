@@ -40,6 +40,7 @@ public class Sensors {
         laccRecord();
         compassRecord();
         gyrRecord();
+        lightRecord();
     }
 
     private void gpsRecord() {
@@ -157,6 +158,26 @@ public class Sensors {
         gyrStarted=true;
     }
 
+    public void lightRecord(){
+        lightSensorManager = (SensorManager) this.context.getSystemService(Context.SENSOR_SERVICE);
+        lightSensor=lightSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        lightSensorEventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                float x = event.values[0];
+                Log.v("Light","Lux :"+x);
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+            }
+        };
+        lightSensorManager.registerListener(lightSensorEventListener,lightSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        lightStarted=true;
+
+    }
+
     public void stopAll(){
         if(gpsStarted){
             locationManager.removeUpdates(locationListener);
@@ -173,7 +194,12 @@ public class Sensors {
         if(gyrStarted){
             gyrSensorManager.unregisterListener(gyrSensorEventListener);
         }
+        if(lightStarted){
+            lightSensorManager.unregisterListener(lightSensorEventListener);
+        }
 
     }
+
+
 
 }
